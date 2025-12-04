@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     ageRange: { 
         type: String, 
-        enum: ['5-12', '13-18', '19-26'] 
+        enum: ['5-12', '13-18', '19-26','27+'] 
     }
 });
 

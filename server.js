@@ -12,6 +12,8 @@ app.use(cors());
 
 // Definir Rutas
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/questions', require('./routes/questionRoutes'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

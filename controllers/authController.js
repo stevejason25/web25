@@ -6,6 +6,7 @@ const calculateAgeRange = (age) => {
     if (age >= 5 && age <= 12) return '5-12';
     if (age >= 13 && age <= 18) return '13-18';
     if (age >= 19 && age <= 26) return '19-26';
+    if (age >= 27) return '27+';
     return null;
 };
 
@@ -15,7 +16,7 @@ exports.register = async (req, res) => {
         
         // Calcular rango
         const ageRange = calculateAgeRange(age);
-        if (!ageRange) return res.status(400).json({ msg: 'Edad fuera de rango permitido (5-26)' });
+        if (!ageRange) return res.status(400).json({ msg: 'Edad no válida (mínimo 5 años)' });
 
         // Verificar si existe usuario
         let user = await User.findOne({ email });
