@@ -15,7 +15,7 @@ const questionSchema = new mongoose.Schema({
     // --- NUEVO CAMPO: ETIQUETA DE EDAD ---
     ageRange: {
         type: String,
-        enum: ['5-12', '13-18', '19-26', '27+'], // Debe coincidir con el usuario
+        enum: ['5-12', '13-18', '19-26', '27+'],
         required: true
     },
     // -------------------------------------
