@@ -2,12 +2,11 @@ const express = require('express');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const https = require('https');
+const spdy = require('spdy');
 const fs = require('fs');
 
 dotenv.config();
 
-// Conectar a la Base de Datos
 connectDB();
 
 const app = express();
@@ -21,14 +20,19 @@ app.use('/api/questions', require('./routes/questionRoutes'));
 
 const PORT = process.env.PORT || 3000;
 
-// Configuración de los certificados que acabas de crear
-const httpsOptions = {
-    key: fs.readFileSync('server.key'),  // La llave privada
-    cert: fs.readFileSync('server.cert') // El certificado público
+// Configuración de Certificados (Igual que antes)
+const options = {
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
 };
 
-// Arrancar el servidor en modo HTTPS
-https.createServer(httpsOptions, app).listen(PORT, () => {
-    console.log(`🔒 Servidor HTTPS seguro corriendo en el puerto ${PORT}`);
-    console.log(`🍃 MongoDB conectado`);
+// 2. Creamos el servidor usando SPDY (HTTP/2)
+spdy.createServer(options, app).listen(PORT, (error) => {
+    if (error) {
+        console.error(error);
+        return process.exit(1);
+    } else {
+        console.log(`🚀 Servidor HTTP/2 seguro corriendo en el puerto ${PORT}`);
+        console.log(`🍃 MongoDB conectado`);
+    }
 });
