@@ -2,7 +2,6 @@ const express = require('express');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
 const cors = require('cors');
-// Importamos las librerías para seguridad y archivos
 const https = require('https');
 const fs = require('fs');
 
