@@ -1,7 +1,6 @@
 const Category = require('../models/Category');
 const Question = require('../models/Question');
 
-// Crear una Categoría
 exports.createCategory = async (req, res) => {
     try {
         const { name, subcategories, description } = req.body;
@@ -15,7 +14,6 @@ exports.createCategory = async (req, res) => {
     }
 };
 
-// Crear una Pregunta (Alternativa directa desde admin)
 exports.createQuestion = async (req, res) => {
     try {
         const creatorId = req.user.id; 
@@ -38,7 +36,6 @@ exports.createQuestion = async (req, res) => {
     }
 };
 
-// Obtener todas las categorías (ESTA ES LA QUE FALTABA)
 exports.getCategories = async (req, res) => {
     try {
         const categories = await Category.find();

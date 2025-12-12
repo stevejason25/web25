@@ -14,15 +14,12 @@ exports.register = async (req, res) => {
     try {
         const { username, email, password, role, age } = req.body;
         
-        // Calcular rango
         const ageRange = calculateAgeRange(age);
         if (!ageRange) return res.status(400).json({ msg: 'Edad no válida (mínimo 5 años)' });
 
-        // Verificar si existe usuario
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ msg: 'El usuario ya existe' });
 
-        // Encriptar password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 

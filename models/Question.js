@@ -7,18 +7,21 @@ const questionSchema = new mongoose.Schema({
         enum: ['seleccion_multiple', 'verdadero_falso', 'dinamica'], 
         required: true 
     },
+    explanation: { type: String 
+
+    }, 
+    multimediaURL: { type: String 
+    },
     difficulty: { 
         type: String, 
         enum: ['facil', 'medio', 'dificil'], 
         required: true 
     },
-    // --- NUEVO CAMPO: ETIQUETA DE EDAD ---
     ageRange: {
         type: String,
         enum: ['5-12', '13-18', '19-26', '27+'],
         required: true
     },
-    // -------------------------------------
     category: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Category',
