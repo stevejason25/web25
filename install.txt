@@ -1,40 +1,92 @@
-=== GUÍA DE INSTALACIÓN Y DESPLIEGUE ===
+==========================================================================
+ MANUAL DE INSTALACIÓN Y DESPLIEGUE - PROYECTO BACKEND
+==========================================================================
+Autor: Steve Jason
+Asignatura: Ingeniería Informática
+Versión: 1.0.0
 
-REQUISITOS PREVIOS:
-1. Node.js v20 (LTS) instalado.
-2. MongoDB corriendo (Local o Atlas).
+--------------------------------------------------------------------------
+1. REQUISITOS PREVIOS DEL SISTEMA
+--------------------------------------------------------------------------
+Para ejecutar este proyecto, asegúrese de tener instalado:
+- Node.js v20 (LTS) o superior.
+- MongoDB (Instancia local o Cluster en Mongo Atlas).
+- OpenSSL (Para generación de certificados en entornos locales).
 
-PASO 1: INSTALAR DEPENDENCIAS
-Ejecutar en la terminal:
-npm install
+--------------------------------------------------------------------------
+2. INSTALACIÓN DE DEPENDENCIAS
+--------------------------------------------------------------------------
+Abra una terminal en la raíz del proyecto y ejecute:
 
-PASO 2: CONFIGURACIÓN DE SEGURIDAD (HTTPS/HTTP2)
-El proyecto requiere certificados SSL para funcionar en modo seguro.
-1. Genere sus propios certificados autofirmados (server.key y server.cert).
-   Puede usar OpenSSL con este comando en Linux/Git Bash:
-   openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "//CN=localhost"
-2. Coloque los archivos 'server.key' y 'server.cert' en la RAÍZ del proyecto (al mismo nivel que server.js).
-   
-NOTA TÉCNICA: El archivo server.js utiliza 'fs.readFileSync' para leer estos archivos desde la raíz y pasarlos a la configuración del servidor seguro.
+   npm install
 
-PASO 3: VARIABLES DE ENTORNO (.env)
+--------------------------------------------------------------------------
+3. CONFIGURACIÓN DE SEGURIDAD (SSL/TLS - HTTP2)
+--------------------------------------------------------------------------
+IMPORTANTE: Por políticas de seguridad, este repositorio NO incluye llaves privadas.
+Debe generar sus propios certificados autofirmados para el entorno de desarrollo.
 
-PORT=3000
-MONGO_URI=mongodb://localhost:27017/tu_base_de_datos  <-- O tu URL de Mongo Atlas
-JWT_SECRET=escribe_aqui_una_frase_secreta_y_larga
+PASO A: Generar certificados
+Ejecute el siguiente comando en su terminal (Linux/Mac/Git Bash):
 
-PASO 4: POBLAR LA BASE DE DATOS (SEEDER)
-Para no iniciar con la base de datos vacía, he creado un script que genera:
-- 1 Usuario Administrador (admin@test.com / 123)
-- 1 Usuario Profesor (profe@test.com / 123)
-- 1 Usuario Estudiante (pepito@test.com / 123)
-- Categoría "Matemáticas"
-- Preguntas de prueba
+   openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "/CN=localhost"
 
-Ejecute el siguiente comando:
-node seed.js
+PASO B: Ubicación de archivos
+Mover los archivos generados ('server.key' y 'server.cert') a la RAÍZ del proyecto 
+(al mismo nivel que el archivo 'package.json' y 'server.js').
 
-PASO 5: INICIAR EL SERVIDOR
-npm run dev
+PASO C: Verificación de Configuración en Express
+El servidor está configurado para leer estos archivos automáticamente. 
+La lógica implementada en 'server.js' es la siguiente:
 
-El servidor iniciará en: https://localhost:3000
+   const spdy = require('spdy'); // O https según tu implementación
+   const fs = require('fs');
+
+   const options = {
+       key: fs.readFileSync(__dirname + '/server.key'),
+       cert: fs.readFileSync(__dirname + '/server.cert')
+   };
+
+   // El servidor se inicia con estas credenciales
+   spdy.createServer(options, app).listen(port, ...);
+
+--------------------------------------------------------------------------
+4. VARIABLES DE ENTORNO (.env)
+--------------------------------------------------------------------------
+Cree un archivo llamado '.env' en la raíz del proyecto.
+Copie el siguiente contenido y reemplace con sus credenciales:
+
+   PORT=3000
+   MONGO_URI=mongodb://localhost:27017/servineo_db
+   JWT_SECRET=coloque_aqui_una_frase_secreta_segura
+
+   # Referencias para configuración de servicios externos:
+   # - MongoDB Atlas Connection String: 
+   #   https://www.mongodb.com/docs/guides/atlas/connection-string/
+   # - JWT Best Practices: 
+   #   https://jwt.io/introduction
+
+--------------------------------------------------------------------------
+5. POBLADO DE BASE DE DATOS (SEEDER)
+--------------------------------------------------------------------------
+El proyecto incluye un script para poblar la base de datos con datos de prueba
+necesarios para la evaluación (Roles, Usuarios, Categorías).
+
+Ejecute el comando:
+
+   node seed.js
+
+Credenciales de acceso generadas por el seeder:
+- Administrador: admin@test.com  / 123
+- Profesor:      profe@test.com  / 123
+- Estudiante:    pepito@test.com / 123
+
+--------------------------------------------------------------------------
+6. EJECUCIÓN DEL SERVIDOR
+--------------------------------------------------------------------------
+Una vez configurados los certificados y la base de datos, inicie el servidor:
+
+   npm run dev
+
+El servicio estará disponible en: https://localhost:3000
+(Acepte la advertencia de seguridad del navegador al usar certificados autofirmados).

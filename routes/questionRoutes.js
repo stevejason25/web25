@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const questionController = require('../controllers/questionController');
 const auth = require('../middleware/auth'); 
+const { validateCreateQuestion } = require('../validators/questionValidator');
 
-router.post('/', auth(['admin', 'profesor']), questionController.createQuestion);
+router.post('/', auth(['admin', 'profesor']), validateCreateQuestion, questionController.createQuestion);
 
 router.get('/', auth(), questionController.getQuestions);
 

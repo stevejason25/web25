@@ -19,11 +19,14 @@ exports.createQuestion = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 exports.getQuestions = async (req, res) => {
     try {
         const { difficulty, category } = req.query;
         let query = {};
+
         if (req.user.role === 'estudiante') {
+             query.status = 'publicado';
              const currentUser = await User.findById(req.user.id);
              if (currentUser.ageRange) {
                  query.ageRange = currentUser.ageRange; 
@@ -49,6 +52,7 @@ exports.submitAnswer = async (req, res) => {
     try {
         const { questionId, selectedOptionId } = req.body;
         const studentId = req.user.id;
+
         const question = await Question.findById(questionId);
         if (!question) return res.status(404).json({ msg: 'Pregunta no encontrada' });
 
@@ -69,6 +73,7 @@ exports.submitAnswer = async (req, res) => {
         });
 
         await newResult.save();
+
         return res.json({ 
             msg: isCorrect ? '¡Correcto! 🎉' : 'Incorrecto 😢', 
             correct: isCorrect,
@@ -81,6 +86,7 @@ exports.submitAnswer = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 exports.getMyHistory = async (req, res) => {
     try {
         const results = await Result.find({ student: req.user.id })

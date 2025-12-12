@@ -6,6 +6,7 @@ const QuizSchema = new mongoose.Schema({
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     questions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }],
+    scheduledFor: { type: Date },
     isActive: { type: Boolean, default: false }, 
     timeLimit: { type: Number, default: 30 }, 
     created_at: { type: Date, default: Date.now }

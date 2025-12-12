@@ -4,22 +4,20 @@ const bcrypt = require('bcryptjs');
 const User = require('./models/User'); 
 const Category = require('./models/Category'); 
 const Question = require('./models/Question'); 
+const hashedPassword = await bcrypt.hash('123', salt);
 
 dotenv.config();
 
 const seedDB = async () => {
     try {
-        // 1. Conectar a MongoDB
         await mongoose.connect(process.env.MONGO_URI);
         console.log('🍃 MongoDB Conectado para Seeding...');
 
-        // 2. Limpiar la base de datos
         await User.deleteMany();
         await Category.deleteMany();
         await Question.deleteMany();
         console.log('🗑️  Base de datos limpiada.');
 
-        // 3. Crear Usuarios (Encriptando contraseñas)
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash('123', salt);
 
@@ -44,12 +42,12 @@ const seedDB = async () => {
             email: 'pepito@test.com',
             password: hashedPassword,
             role: 'estudiante',
+            ageRange: '5-12',
             age: 10 
         });
         
         console.log('👥 Usuarios creados: Admin, Profe, Pepito (Pass: 123)');
 
-        // 4. Crear Categoría
         const matematicas = await Category.create({
             name: 'Matemáticas',
             subcategories: ['Aritmética', 'Geometría'],
@@ -58,7 +56,6 @@ const seedDB = async () => {
         });
         console.log('📚 Categoría Matemáticas creada.');
 
-        // 5. Crear Pregunta
         await Question.create({
             title: '¿Cuánto es 5 + 5?',
             type: 'seleccion_multiple',
