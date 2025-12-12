@@ -25,7 +25,6 @@ const options = {
     cert: fs.readFileSync('server.cert')
 };
 
-// 5. Crear el servidor HTTP/2
 spdy.createServer(options, app).listen(PORT, (error) => {
     if (error) {
         console.error('Error al iniciar el servidor:', error);

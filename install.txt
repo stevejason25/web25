@@ -1,0 +1,40 @@
+=== GUÍA DE INSTALACIÓN Y DESPLIEGUE ===
+
+REQUISITOS PREVIOS:
+1. Node.js v20 (LTS) instalado.
+2. MongoDB corriendo (Local o Atlas).
+
+PASO 1: INSTALAR DEPENDENCIAS
+Ejecutar en la terminal:
+npm install
+
+PASO 2: CONFIGURACIÓN DE SEGURIDAD (HTTPS/HTTP2)
+El proyecto requiere certificados SSL para funcionar en modo seguro.
+1. Genere sus propios certificados autofirmados (server.key y server.cert).
+   Puede usar OpenSSL con este comando en Linux/Git Bash:
+   openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "//CN=localhost"
+2. Coloque los archivos 'server.key' y 'server.cert' en la RAÍZ del proyecto (al mismo nivel que server.js).
+   
+NOTA TÉCNICA: El archivo server.js utiliza 'fs.readFileSync' para leer estos archivos desde la raíz y pasarlos a la configuración del servidor seguro.
+
+PASO 3: VARIABLES DE ENTORNO (.env)
+
+PORT=3000
+MONGO_URI=mongodb://localhost:27017/tu_base_de_datos  <-- O tu URL de Mongo Atlas
+JWT_SECRET=escribe_aqui_una_frase_secreta_y_larga
+
+PASO 4: POBLAR LA BASE DE DATOS (SEEDER)
+Para no iniciar con la base de datos vacía, he creado un script que genera:
+- 1 Usuario Administrador (admin@test.com / 123)
+- 1 Usuario Profesor (profe@test.com / 123)
+- 1 Usuario Estudiante (pepito@test.com / 123)
+- Categoría "Matemáticas"
+- Preguntas de prueba
+
+Ejecute el siguiente comando:
+node seed.js
+
+PASO 5: INICIAR EL SERVIDOR
+npm run dev
+
+El servidor iniciará en: https://localhost:3000
